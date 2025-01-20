@@ -11,9 +11,14 @@ public class ConcurrentBank {
     public Lock lock = new ReentrantLock();
 
     public BankAccount createAccount(BigDecimal initialBalance) {
-        BankAccount bankAccount = new BankAccount(initialBalance);
-        bankAccounts.put("account" + bankAccounts.size() + 1, bankAccount);
-        return bankAccount;
+        lock.lock();
+        try {
+            BankAccount bankAccount = new BankAccount(initialBalance);
+            bankAccounts.put("account" + bankAccounts.size() + 1, bankAccount);
+            return bankAccount;
+        }finally {
+            lock.unlock();
+        }
     }
 
     public void transfer(BankAccount account1, BankAccount account2, BigDecimal amountToTransfer) {
