@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrentBank {
     private Map<String,BankAccount> bankAccounts = new HashMap<>();
-    public Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
     public BankAccount createAccount(BigDecimal initialBalance) {
         lock.lock();
