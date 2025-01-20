@@ -1,6 +1,6 @@
 package group.stringbuilder_task;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
 
 public class CustomStringBuilder {
 
@@ -15,10 +15,10 @@ public class CustomStringBuilder {
     }
 
     private static class StringBuilderSnapshotHistory {
-        private final Stack<StringBuilderSnapshot> snapshots;
+        private final ArrayDeque<StringBuilderSnapshot> snapshots;
 
         public StringBuilderSnapshotHistory() {
-            snapshots = new Stack<>();
+            snapshots = new ArrayDeque<>();
         }
 
         public void addSnapshot(StringBuilderSnapshot snapshot) {
