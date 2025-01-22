@@ -18,8 +18,8 @@ public class ConcurrentBankTest {
         BankAccount account2 = bank.createAccount(balanceForAccount2);
 
         // Перевод между счетами
-        Thread transferThread1 = new Thread(() -> bank.transfer(account1, account2, BigDecimal.valueOf(200)));
-        Thread transferThread2 = new Thread(() -> bank.transfer(account2, account1, BigDecimal.valueOf(100)));
+        Thread transferThread1 = new Thread(() -> bank.transfer(account1.getAccountId(), account2.getAccountId(), BigDecimal.valueOf(200)));
+        Thread transferThread2 = new Thread(() -> bank.transfer(account2.getAccountId(), account1.getAccountId(), BigDecimal.valueOf(100)));
 
         transferThread1.start();
         transferThread2.start();

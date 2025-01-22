@@ -7,10 +7,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class BankAccount {
     private BigDecimal balance;
+    private int accountId;
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
-    public BankAccount(BigDecimal initialBalance) {
+    public BankAccount(int accountId, BigDecimal initialBalance) {
         this.balance = initialBalance;
+        this.accountId = accountId;
     }
 
     public void deposit(BigDecimal amount) {
@@ -47,5 +49,9 @@ public class BankAccount {
         } finally {
             readLock.unlock();
         }
+    }
+
+    public int getAccountId() {
+        return accountId;
     }
 }

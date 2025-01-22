@@ -1,38 +1,40 @@
 package group.concurrentbank_task;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConcurrentBank {
-    private Map<String,BankAccount> bankAccounts = new HashMap<>();
-    private final Lock lock = new ReentrantLock();
+    private final CopyOnWriteArrayList<BankAccount> bankAccounts = new CopyOnWriteArrayList<>();
 
     public BankAccount createAccount(BigDecimal initialBalance) {
-        lock.lock();
-        try {
-            BankAccount bankAccount = new BankAccount(initialBalance);
-            bankAccounts.put("account" + bankAccounts.size() + 1, bankAccount);
-            return bankAccount;
-        }finally {
-            lock.unlock();
-        }
+        BankAccount bankAccount = new BankAccount(bankAccounts.size(), initialBalance);
+        bankAccounts.add(bankAccount);
+        return bankAccount;
     }
 
-    public void transfer(BankAccount account1, BankAccount account2, BigDecimal amountToTransfer) {
-        lock.lock();
-        try {
-            account1.withdraw(amountToTransfer);
-            account2.deposit(amountToTransfer);
-        } finally {
-            lock.unlock();
-        }
+    public void transfer(int accountFromId, int accountToId, BigDecimal amountToTransfer) {
+        BankAccount fromAccount = bankAccounts.get(accountFromId);
+        BankAccount toAccount = bankAccounts.get(accountToId);
 
+        if (accountFromId < accountToId) {
+            synchronized (fromAccount) {
+                synchronized (toAccount) {
+                    fromAccount.withdraw(amountToTransfer);
+                    toAccount.deposit(amountToTransfer);
+                }
+            }
+        }
+        else {
+            synchronized (toAccount) {
+                synchronized (fromAccount) {
+                    toAccount.deposit(amountToTransfer);
+                    fromAccount.withdraw(amountToTransfer);
+                }
+            }
+        }
     }
 
     public BigDecimal getTotalBalance() {
-        return bankAccounts.values().stream().map(BankAccount::getBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return bankAccounts.stream().map(BankAccount::getBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
