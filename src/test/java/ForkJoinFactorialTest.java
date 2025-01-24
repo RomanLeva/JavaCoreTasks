@@ -11,11 +11,10 @@ public class ForkJoinFactorialTest {
         int n = 10; // Вычисление факториала для числа 10
 
         long result;
-        try (ForkJoinPool forkJoinPool = new ForkJoinPool()) {
-            FactorialTask factorialTask = new FactorialTask(n);
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        FactorialTask factorialTask = new FactorialTask(n);
 
-            result = forkJoinPool.invoke(factorialTask);
-        }
+        result = forkJoinPool.invoke(factorialTask);
 
         System.out.println("Факториал " + n + "! = " + result);
         assertEquals(3628800, result);
